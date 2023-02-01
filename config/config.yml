@@ -1,0 +1,4 @@
+db:
+  connection_string: localhost:27017
+  name: mam
+

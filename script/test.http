@@ -1,0 +1,13 @@
+GET http://127.0.0.1:8080/some/b.mxf
+
+
+###
+
+POST http://127.0.0.1:8080/some
+Content-Type: application/json
+
+{
+  "filename": "b.mxf",
+  "storage": 19,
+  "path": "/storage/4/relative"
+}
