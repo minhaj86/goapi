@@ -3,6 +3,7 @@ module goapi
 go 1.18
 
 require (
+	github.com/dranikpg/dto-mapper v0.1.1
 	github.com/gin-gonic/gin v1.8.2
 	github.com/goonode/mogo v0.0.0-20220526213014-788c0d725ea3
 	go.mongodb.org/mongo-driver v1.11.1

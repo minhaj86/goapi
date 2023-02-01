@@ -1,26 +1,48 @@
 package controller
 
 import (
+	"github.com/dranikpg/dto-mapper"
 	"github.com/gin-gonic/gin"
 	"github.com/goonode/mogo"
 	"go.mongodb.org/mongo-driver/bson"
+	"goapi/dtos"
 	"goapi/model"
 	"net/http"
 )
 
 func Posting(httpContext *gin.Context) {
-	model := mogo.NewDoc(model.File{}).(*model.File)
-	httpContext.BindJSON(&model)
-	model.Save()
-	httpContext.JSON(http.StatusCreated, model)
-}
-
-func Getting(context *gin.Context) {
-	model := mogo.NewDoc(model.File{}).(*model.File)
-	filename := context.Param("filename")
-	err := model.FindOne(bson.M{"filename": filename}, model)
-	if err != nil {
+	fileModel := mogo.NewDoc(model.File{}).(*model.File)
+	if httpContext.BindJSON(&fileModel) != nil {
+		httpContext.JSON(http.StatusBadRequest, model.Error{
+			Title:       "Bad json",
+			Description: "Bad json",
+		})
 		return
 	}
-	context.JSON(http.StatusOK, model)
+	if fileModel.Save() != nil {
+		httpContext.JSON(http.StatusInternalServerError, model.Error{
+			Title:       "Database error",
+			Description: "Database error",
+		})
+		return
+	}
+	httpContext.JSON(http.StatusCreated, fileModel)
+}
+
+func Getting(httpContext *gin.Context) {
+	fileModel := mogo.NewDoc(model.File{}).(*model.File)
+	filename := httpContext.Param("filename")
+	err := fileModel.FindOne(bson.M{"filename": filename}, fileModel)
+	if err != nil {
+		httpContext.JSON(http.StatusInternalServerError, model.Error{
+			Title:       "Database error",
+			Description: "Database error",
+		})
+		return
+	}
+
+	mapper := dto.Mapper{}
+	fileDto := dtos.File{}
+	mapper.Map(&fileDto, fileModel)
+	httpContext.JSON(http.StatusOK, fileDto)
 }
