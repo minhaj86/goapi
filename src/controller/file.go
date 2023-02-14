@@ -3,10 +3,10 @@ package controller
 import (
 	"github.com/dranikpg/dto-mapper"
 	"github.com/gin-gonic/gin"
+	"github.com/goapi/dtos"
+	"github.com/goapi/model"
 	"github.com/goonode/mogo"
 	"go.mongodb.org/mongo-driver/bson"
-	"goapi/dtos"
-	"goapi/model"
 	"net/http"
 )
 
@@ -29,7 +29,7 @@ func Posting(httpContext *gin.Context) {
 	httpContext.JSON(http.StatusCreated, fileModel)
 }
 
-func Getting(httpContext *gin.Context) {
+func Get(httpContext *gin.Context) {
 	fileModel := mogo.NewDoc(model.File{}).(*model.File)
 	filename := httpContext.Param("filename")
 	err := fileModel.FindOne(bson.M{"filename": filename}, fileModel)
